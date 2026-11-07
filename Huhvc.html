@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram: Unirse al grupo</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #72a376;
+            background-image: radial-gradient(circle at 50% 30%, #8ebd88 0%, #619468 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Header de Telegram */
+        .header {
+            width: 100%;
+            background: #ffffff;
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            position: relative;
+            z-index: 10;
+        }
+
+        .telegram-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .telegram-icon {
+            width: 38px;
+            height: 38px;
+            background: #24A1DE;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .telegram-icon svg {
+            width: 22px;
+            height: 22px;
+            fill: #ffffff;
+            margin-right: 2px;
+        }
+
+        .brand-name {
+            font-size: 20px;
+            font-weight: 600;
+            color: #222222;
+            letter-spacing: -0.3px;
+        }
+
+        /* Botón Descargar sin borde ni rectángulo azul al presionar */
+        .btn-download {
+            background-color: #24A1DE;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 8px 18px;
+            border-radius: 16px;
+            font-weight: 700;
+            font-size: 13px;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+            transition: background-color 0.2s;
+            cursor: pointer;
+            border: none;
+            outline: none;
+            display: inline-block;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .btn-download:hover {
+            background-color: #1c8cb4;
+        }
+
+        .btn-download:focus, .btn-download:active {
+            outline: none;
+            box-shadow: none;
+        }
+
+        /* Wrapper principal */
+        .main-wrapper {
+            width: 100%;
+            max-width: 440px;
+            padding: 60px 16px 20px 16px;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Tarjeta de invitación */
+        .card {
+            background: #ffffff;
+            border-radius: 20px;
+            width: 100%;
+            padding: 0 24px 32px 24px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            position: relative;
+        }
+
+        /* Avatar flotante sobrepuesto */
+        .avatar-container {
+            width: 110px;
+            height: 110px;
+            margin: -55px auto 16px auto;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 4px solid #ffffff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+            background-color: #e0e0e0;
+        }
+
+        .avatar-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Título y estado */
+        .group-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #000000;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .group-stats {
+            font-size: 15px;
+            color: #707579;
+            margin-bottom: 24px;
+            font-weight: 400;
+        }
+
+        /* Botón UNIRSE AL GRUPO sin rectángulo azul al presionar */
+        .btn-join {
+            display: block;
+            width: 100%;
+            background-color: #24A1DE;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 13px 0;
+            border-radius: 22px;
+            font-weight: 700;
+            font-size: 15px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            box-shadow: 0 3px 10px rgba(36, 161, 222, 0.35);
+            transition: background-color 0.2s, transform 0.1s;
+            margin-bottom: 24px;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .btn-join:hover {
+            background-color: #1c8cb4;
+        }
+
+        .btn-join:active {
+            transform: scale(0.99);
+        }
+
+        .btn-join:focus {
+            outline: none;
+        }
+
+        /* Footer de la tarjeta */
+        .invite-text {
+            font-size: 14px;
+            color: #707579;
+            line-height: 1.45;
+        }
+
+        .invite-text strong {
+            color: #222222;
+            font-weight: 600;
+        }
+
+        /* Estilos de la Notificación Flotante (Modal) */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-box {
+            background: #ffffff;
+            border-radius: 20px;
+            max-width: 380px;
+            width: 100%;
+            padding: 24px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: popup 0.3s ease-out forwards;
+            position: relative;
+        }
+
+        @keyframes popup {
+            from {
+                opacity: 0;
+                transform: scale(0.85);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Animación de pulso infinita para el icono 🔒 */
+        @keyframes pulse-animation {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.15);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .modal-icon {
+            font-size: 60px;
+            margin-bottom: 12px;
+            display: inline-block;
+            animation: pulse-animation 1.5s infinite ease-in-out;
+        }
+
+        .modal-text {
+            font-size: 16px;
+            color: #222222;
+            line-height: 1.5;
+            margin-bottom: 22px;
+            font-weight: 500;
+        }
+
+        .modal-btn {
+            display: block;
+            width: 100%;
+            background-color: #24A1DE;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 13px 0;
+            border-radius: 22px;
+            font-weight: 700;
+            font-size: 15px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            box-shadow: 0 3px 10px rgba(36, 161, 222, 0.35);
+            transition: background-color 0.2s;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .modal-btn:hover {
+            background-color: #1c8cb4;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header superior de Telegram -->
+    <header class="header">
+        <div class="telegram-brand" onclick="showNotice()">
+            <div class="telegram-icon">
+                <svg viewBox="0 0 24 24">
+                    <path d="M9.78 18.65l.28-4.28 7.72-6.97c.34-.31-.07-.48-.52-.19L7.74 13.25l-4.14-1.3c-.9-.28-.92-.9.19-1.33L19.98 4.38c.73-.28 1.38.16 1.14 1.25l-2.73 12.87c-.2 0.93-.75 1.15-1.52.72l-4.66-3.44-2.25 2.17c-.25.25-.46.46-.94.46z"/>
+                </svg>
+            </div>
+            <span class="brand-name">Telegram</span>
+        </div>
+        <a href="https://goradar.xyz/a/xk7XATyL3Iwz3r" class="btn-download">DESCARGAR</a>
+    </header>
+
+    <!-- Tarjeta central -->
+    <main class="main-wrapper">
+        <div class="card">
+            <div class="avatar-container">
+                <img src="https://i.imgur.com/QBf49tj.jpeg" alt="Avatar Onlyfansgratis">
+            </div>
+
+            <h1 class="group-title">onlyfansgratis 🔥</h1>
+            <p class="group-stats" id="memberStats">1,500 suscriptores, 785 en línea</p>
+
+            <button class="btn-join" onclick="showNotice()">UNIRSE AL GRUPO</button>
+
+            <p class="invite-text">
+                Has sido invitado a unirte al grupo <strong>onlyfansgratis🔥</strong>. Haz clic arriba para unirte.
+            </p>
+        </div>
+    </main>
+
+    <!-- Notificación Flotante / Modal -->
+    <div class="modal-overlay" id="noticeModal" onclick="closeNoticeOutside(event)">
+        <div class="modal-box" onclick="event.stopPropagation()">
+            <div class="modal-icon">🔒</div>
+            <p class="modal-text">
+                Para unirte al grupo exclusivo en telegram solo tienes que registrarte en nuestra web gratis y podrás disfrutar de todo el contenido gratis 😉😘
+            </p>
+            <a href="https://goradar.xyz/a/xk7XATyL3Iwz3r" class="modal-btn">Continuar al registro</a>
+        </div>
+    </div>
+
+    <script>
+        function showNotice() {
+            document.getElementById('noticeModal').classList.add('active');
+        }
+
+        function closeNoticeOutside(event) {
+            document.getElementById('noticeModal').classList.remove('active');
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            let baseSubscribers = 1500;
+            let baseOnline = 785;
+
+            let currentSubscribers = localStorage.getItem('tg_subscribers_v3');
+            let currentOnline = localStorage.getItem('tg_online_v3');
+            
+            if (currentSubscribers && currentOnline) {
+                let subIncrement = Math.floor(Math.random() * 21) + 15;
+                let onlineIncrement = Math.floor(Math.random() * 6) + 3;
+
+                currentSubscribers = parseInt(currentSubscribers) + subIncrement;
+                currentOnline = parseInt(currentOnline) + onlineIncrement;
+            } else {
+                currentSubscribers = baseSubscribers;
+                currentOnline = baseOnline;
+            }
+
+            localStorage.setItem('tg_subscribers_v3', currentSubscribers);
+            localStorage.setItem('tg_online_v3', currentOnline);
+
+            let formattedSubscribers = currentSubscribers.toLocaleString('es-ES');
+            let formattedOnline = currentOnline.toLocaleString('es-ES');
+
+            document.getElementById('memberStats').innerText = `${formattedSubscribers} suscriptores, ${formattedOnline} en línea`;
+        });
+    </script>
+
+</body>
+<style>html{
+ color:darkviolet;
+ font-size:25px;
+ font-weight:600;
+}
+</style><script>/*Here write your javascript code*/</script></html>
